@@ -2,7 +2,15 @@
  
 ## Vision
 
-Help schools ease the process of getting their students assignments and grading into one place, saving the planet, improving the education, and include the parents into the loop by providing a web management system.
+Help schools ease the process of getting their students assignments and grades into one place by providing a web management system.
+
+**What pain point does this project solve?**
+
+Putting all the students information regarding the assignments and grades into one place without the worry of loosing a hard copy document.
+
+**Why should we care about your product?**
+
+Saving the planet, improving the education, and include the parents into the loop of education.
 
 ## Scope (In/Out)
 
