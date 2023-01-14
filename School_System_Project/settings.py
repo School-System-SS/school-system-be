@@ -154,8 +154,8 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-'http://localhost:3000/',
-'http://localhost:3001/',
+'http://localhost:3000',
+'http://localhost:3001',
 
 ]
 
@@ -175,4 +175,4 @@ CORS_ALLOW_HEADERS = ('content-disposition', 'accept-encoding',
 LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "home"
 
-AUTH_USER_MODEL='accounts.CustomUser'
+AUTH_USER_MODEL='account.CustomUser'
