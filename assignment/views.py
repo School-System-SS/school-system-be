@@ -10,10 +10,7 @@ from rest_framework.parsers import JSONParser
 class AssignmentDataView(APIView):
     def get(self, request):
         data = Assignment.objects.all()
-        cleaned_data = [i for i in data if request.user.pk == i.user.pk ]
-       
-
-        serializer = Assignmentserializer(cleaned_data, context={'request': request}, many=True)
+        serializer = Assignmentserializer(data, context={'request': request}, many=True)
         return Response(serializer.data)
 
 class AssignmentCertainDataView(APIView):
@@ -24,7 +21,7 @@ class AssignmentCertainDataView(APIView):
             return Response(serializer.data)
         else: return Response(status=status.HTTP_400_BAD_REQUEST)
 
-class AssignmentCreateView(APIView): 
+class AssignmentCreateView(APIView):
     def post(self, request):
         user = request.user.pk 
         data = request.data
