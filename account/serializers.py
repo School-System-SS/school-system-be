@@ -35,3 +35,7 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
+class GetUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= CustomUser
+        fields="__all__"
