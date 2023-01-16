@@ -13,7 +13,7 @@ class AssignmentDataView(APIView):
         cleaned_data = [i for i in data if request.user.pk == i.user.pk ]
        
 
-        serializer = Assignmentserializer(cleaned_data, context={'request': request}, many=True)
+        serializer = Assignmentserializer(data, context={'request': request}, many=True)
         return Response(serializer.data)
 
 class AssignmentCertainDataView(APIView):
