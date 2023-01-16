@@ -13,7 +13,7 @@ class CourseListView(APIView):
         def get(self, request):
                     data = Course.objects.all()
                     cleaned_data = [i for i in data if request.user.pk == i.user.pk]
-                    serializer = CourseSerializer(cleaned_data, context={'request': request}, many=True)
+                    serializer = CourseSerializer(data, context={'request': request}, many=True)
                     return Response(serializer.data)
 
 
