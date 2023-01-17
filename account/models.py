@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-
+from course.models import Course
 Role_Type = (
     ("Admin", "Admin"),
     ("Teacher", "Teacher"),
@@ -19,6 +19,6 @@ class CustomUser(AbstractUser):
         default = 'Admin',
         null=True
         )
-
+    courses=models.ManyToManyField(Course)
     def __str__(self):
         return self.username
