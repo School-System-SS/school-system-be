@@ -30,7 +30,7 @@ class CourseModel(models.Model):
 
     def __str__(self):
         return self.name
-
+ 
 class Assignment(models.Model):
     title = models.CharField(max_length=255)
     attachment = models.FileField(upload_to='uploads/', null=True,blank=True, verbose_name="")
