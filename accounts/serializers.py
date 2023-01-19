@@ -3,8 +3,6 @@ from .models import CustomUser
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 
-
-
 class UserSerializer(serializers.ModelSerializer):
     username = serializers.CharField(
             required=True,
@@ -15,7 +13,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ('username','firstname','lastname','email', 'birthday', 'password', 'password2','role','courses')
+        fields = ('username', 'password', 'password2', 'is_teacher','is_student', 'is_supervisor')
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password2']:
@@ -23,14 +21,16 @@ class UserSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
+        is_teacher = validated_data.get("is_teacher", False)
+        is_student = validated_data.get("is_student", False)
+        is_supervisor = validated_data.get("is_supervisor", False)
+        if not (is_teacher or is_student or is_supervisor):
+            raise serializers.ValidationError("One of is_teacher or is_student or is_supervisor should be true")
         user = CustomUser.objects.create(
             username=validated_data['username'],
-            firstname=validated_data['firstname'],
-            lastname=validated_data['lastname'],
-            email=validated_data['email'],
-            birthday=validated_data['birthday'],
-            role=validated_data['role'],
-            courses=validated_data['courses'],
+            is_teacher=is_teacher,
+            is_student=is_student,
+            is_supervisor=is_supervisor,
         )
         user.set_password(validated_data['password'])
         user.save()

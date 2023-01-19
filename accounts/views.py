@@ -13,8 +13,10 @@ class SignUpView(APIView):
         data = request.data
         serializer = UserSerializer(data=data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(status=status.HTTP_201_CREATED)
+            saved_user = serializer.save()
+            response = {}
+            response["id"] = saved_user.id
+            return Response(response, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class getAllUsers(APIView):

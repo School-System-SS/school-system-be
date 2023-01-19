@@ -1,78 +1,205 @@
 from django.shortcuts import render
-from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers  import CourseSerializer
-from .models import Course
-from rest_framework.parsers import JSONParser 
+from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.parsers import JSONParser 
+from .models import Student
+from .models import Teacher
+from .models import CourseModel
+from .models import Assignment
+from .serializers import AssignmentSerializer
+from .serializers import StudentSerializer
+from .serializers import TeacherSerializer
+from .serializers import CourseSerializer
 
 
+# ----- Student Views ----- #
 
+class GetAllStudents(APIView):
+    def get(self, request):
+        students = Student.objects.all()
+        serializer = StudentSerializer(students, many=True)
+        return Response(serializer.data)
 
-class CourseListView(APIView):
-        def get(self, request):
-                    data = Course.objects.all()
-                    cleaned_data = [i for i in data if request.user.pk == i.user.pk]
-                    serializer = CourseSerializer(data, context={'request': request}, many=True)
-                    return Response(serializer.data)
+class GetStudent(APIView):
+    def get(self, request, pk):
+        student = Student.objects.get(pk=pk)
+        serializer = StudentSerializer(student, context={'request': request}, many=False)
+        return Response(serializer.data)
 
+class CreateStudent(APIView):
+    def post(self, request):
+        user = request.user.pk 
+        data = request.data
+        data["user"] = user 
+        serializer = StudentSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class CertainDataView(APIView):
-        def get(self, request, pk):
-            data = Course.objects.get(pk=pk)
-            serializer = CourseSerializer(data, context={'request': request}, many=False)
-            if request.user.pk == data.user.pk:
-                            return Response(serializer.data)
-            else: return Response(status=status.HTTP_400_BAD_REQUEST)
-
-class CreateView(APIView): 
-        def post(self, request):
-            user = request.user.pk
-            data = request.data
-            data["user"] = user
-            serializer = CourseSerializer(data=data)
+class EditStudent(APIView):
+    def put(self, request, pk):
+        try:
+            student = Student.objects.get(pk=pk)
+            owner = request.user.id
+            updated = JSONParser().parse(request) 
+            print(updated)
+            updated["owner"] = owner
+            serializer = StudentSerializer(student, data=updated)
             if serializer.is_valid():
                 serializer.save()
                 return Response(status=status.HTTP_201_CREATED)
-
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-class UpdateView(APIView):
-    def put(self, request, pk):
-        try:
-            owner = request.user.id
-            user = Course.objects.get(pk=pk)
-            updated = JSONParser().parse(request) 
-            updated["user"] = owner
-            if request.user.pk == user.user.id: 
-                serializer = CourseSerializer(user, data=updated)
-                if serializer.is_valid():
-                    serializer.save()
-                    return Response(status=status.HTTP_201_CREATED)
-            else:
-                raise Course.DoesNotExist
-        except Course.DoesNotExist:
+        except Student.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-class DeleteView(APIView):
+class DeleteStudent(APIView):
     def delete(self, request, pk):
         try:
-            data = Course.objects.get(pk=pk)
-            if request.user.pk == data.user.pk:
-                data.delete()
-                return Response(status=status.HTTP_204_NO_CONTENT)
-            else:
-                raise Course.DoesNotExist
-        except Course.DoesNotExist:
+            data = Student.objects.get(pk=pk)
+            data.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Student.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
+# ----- Teacher Views ----- #
 
+class GetAllTeachers(APIView):
+    def get(self, request):
+        teachers = Teacher.objects.all()
+        serializer = TeacherSerializer(teachers, many=True)
+        return Response(serializer.data)
 
+class GetTeacher(APIView): 
+    def get(self, request, pk):
+        data = Teacher.objects.get(pk=pk)
+        serializer = TeacherSerializer(data, context={'request': request}, many=False)
+        return Response(serializer.data)
 
+class CreateTeacher(APIView):
+    def post(self, request):
+        user = request.user.pk 
+        data = request.data
+        data["user"] = user
+        serializer = TeacherSerializer(data=data)
+        print(data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class EditTeacher(APIView):
+    def put(self, request, pk):
+        try:
+            teacher = Teacher.objects.get(pk=pk)
+            owner = request.user.id
+            updated = JSONParser().parse(request) 
+            print(updated)
+            updated["owner"] = owner
+            serializer = TeacherSerializer(teacher, data=updated)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(status=status.HTTP_201_CREATED)
+        except Teacher.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
+class DeleteTeacher(APIView):
+    def delete(self, request, pk):
+        try:
+            data = Teacher.objects.get(pk=pk)
+            data.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Teacher.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
+# ---- Course Views ---- #
 
+class GetAllCourses(APIView):
+    def get(self, request):
+        courses = CourseModel.objects.all()
+        serializer = CourseSerializer(courses, many=True)
+        return Response(serializer.data)
 
+class GetCourse(APIView):
+    def get(self, request, pk):
+        data = CourseModel.objects.get(pk=pk)
+        serializer = CourseSerializer(data, context={'request': request}, many=False)
+        return Response(serializer.data)
 
-    
+class CreateCourse(APIView):
+    def post(self, request):
+        serializer = CourseSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class EditCourse(APIView):
+    def put(self, request, pk):
+        try:
+            course = CourseModel.objects.get(pk=pk)
+            owner = request.user.id
+            updated = JSONParser().parse(request) 
+            print(updated)
+            updated["owner"] = owner
+            serializer = CourseSerializer(course, data=updated)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(status=status.HTTP_201_CREATED)
+        except CourseModel.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+class DeleteCourse(APIView):
+    def delete(self, request, pk):
+        try:
+            data = CourseModel.objects.get(pk=pk)
+            data.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except CourseModel.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+# ----- Assignment Views ----- #
+
+class GetAllAssignments(APIView):
+    def get(self, request):
+        assignmnets = Assignment.objects.all()
+        serializer = AssignmentSerializer(assignmnets, many=True)
+        return Response(serializer.data)
+
+class GetAssignment(APIView):
+    def get(self, request, pk):
+        data = Assignment.objects.get(pk=pk)
+        serializer = AssignmentSerializer(data, context={'request': request}, many=False)
+        return Response(serializer.data)
+
+class CreateAssignment(APIView):
+    def post(self, request):
+        serializer = AssignmentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class EditAssignmnet(APIView):
+    def put(self, request, pk):
+        try:
+            assignment = Assignment.objects.get(pk=pk)
+            owner = request.user.id
+            updated = JSONParser().parse(request) 
+            print(updated)
+            updated["owner"] = owner
+            serializer = AssignmentSerializer(assignment, data=updated)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(status=status.HTTP_201_CREATED)
+        except Assignment.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+class DeleteAssignment(APIView):
+    def delete(self, request, pk):
+        try:
+            data = Assignment.objects.get(pk=pk)
+            data.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Assignment.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
