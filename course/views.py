@@ -7,10 +7,12 @@ from .models import Student
 from .models import Teacher
 from .models import CourseModel
 from .models import Assignment
+from .models import StudentAssignment
 from .serializers import AssignmentSerializer
 from .serializers import StudentSerializer
 from .serializers import TeacherSerializer
 from .serializers import CourseSerializer
+from .serializers import StudentAssignmentSerializer
 
 
 # ----- Student Views ----- #
@@ -78,9 +80,9 @@ class GetTeacher(APIView):
 
 class CreateTeacher(APIView):
     def post(self, request):
-        user = request.user.pk 
+        # user = request.user.pk 
         data = request.data
-        data["user"] = user
+        # data["user"] = user
         serializer = TeacherSerializer(data=data)
         print(data)
         if serializer.is_valid():
@@ -203,3 +205,64 @@ class DeleteAssignment(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Assignment.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+# ----- StudentAssignment Views ----- #
+
+class GetAllStudentAssignments(APIView):
+    def get(self, request):
+        assignmnets = StudentAssignment.objects.all()
+        serializer = StudentAssignmentSerializer(assignmnets, many=True)
+        return Response(serializer.data)
+
+class GetStudentAssignment(APIView):
+    def get(self, request, pk):
+        data = StudentAssignment.objects.get(pk=pk)
+        serializer = StudentAssignmentSerializer(data, context={'request': request}, many=False)
+        return Response(serializer.data)
+
+class CreateStudentAssignment(APIView):
+    def post(self, request):
+        try:
+            course = CourseModel.objects.get(id=request.data["course"])
+            students = course.student.all()
+            print(course.teacher.id)
+            for student in students:
+                
+                serializer = StudentAssignmentSerializer(data={
+                                                              **request.data,
+                                                              'student': student.id,
+                                                              })
+                if serializer.is_valid():
+                    print(serializer)
+                    serializer.save()
+                else:
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_201_CREATED)
+        except CourseModel.DoesNotExist:
+            return Response(f'Course with id {course.id} does not exist', status=status.HTTP_400_BAD_REQUEST)
+
+class EditStudentAssignmnet(APIView):
+    def put(self, request, pk):
+        try:
+            student_assignment = StudentAssignment.objects.get(pk=pk)
+            student = request.user.id
+            print(student)
+            serializer = StudentAssignmentSerializer(student_assignment, data={
+                                                              **request.data,
+                                                              "is_submitted": True
+                                                              }, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except StudentAssignment.DoesNotExist:
+            return Response(f'StudentAssignment with id {pk} does not exist', status=status.HTTP_404_NOT_FOUND)
+
+# class DeleteStudentAssignment(APIView):
+#     def delete(self, request, pk):
+#         try:
+#             data = StudentAssignment.objects.get(pk=pk)
+#             data.delete()
+#             return Response(status=status.HTTP_204_NO_CONTENT)
+#         except Assignment.DoesNotExist:
+#             return Response(status=status.HTTP_404_NOT_FOUND)

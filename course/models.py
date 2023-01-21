@@ -33,13 +33,23 @@ class CourseModel(models.Model):
  
 class Assignment(models.Model):
     title = models.CharField(max_length=255)
-    attachment = models.FileField(upload_to='uploads/', null=True,blank=True, verbose_name="")
     due_date = models.DateTimeField()
     points = models.FloatField()
-    is_submitted = models.BooleanField()
     course = models.ForeignKey(CourseModel, on_delete=models.CASCADE, related_name='assignments')
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, related_name='assignments')
-    students = models.ManyToManyField(Student)
 
     def __str__(self):
         return self.title
+
+class StudentAssignment(models.Model):
+    # attachment = models.FileField(upload_to='uploads/', null=True,blank=True, verbose_name="")
+    attachment = models.TextField(blank=True, null=True)
+    grade = models.FloatField(blank=True, null=True)
+    is_submitted = models.BooleanField(default=False, blank=True, null=True)
+    submitted_date = models.DateField(blank=True, null=True,auto_now=True)
+    course = models.ForeignKey(CourseModel, on_delete=models.CASCADE)
+    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE,)
+
+    def __str__(self):
+        return self.assignment.title
