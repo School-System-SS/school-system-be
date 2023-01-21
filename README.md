@@ -12,5 +12,5 @@
 
 **DB Architicture**
 
-![](assests/DB.jpg)
+![](assests/Capture.PNG)
 
