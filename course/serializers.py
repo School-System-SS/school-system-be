@@ -10,7 +10,7 @@ class StudentSerializer(serializers.ModelSerializer):
             )
     class Meta:
         model = Student
-        fields = ('pk', 'first_name', 'last_name', 'email', 'birthday', 'student')
+        fields = ('pk', 'first_name', 'last_name', 'email', 'birthday', 'type')
 
 class TeacherSerializer(serializers.ModelSerializer):
     email = serializers.CharField(
@@ -19,7 +19,7 @@ class TeacherSerializer(serializers.ModelSerializer):
             )
     class Meta:
         model = Teacher
-        fields = ('pk', 'first_name', 'last_name', 'birthday', 'email', 'teacher')
+        fields = ('pk', 'first_name', 'last_name', 'birthday', 'email', 'type')
 
 class CourseSerializer(serializers.ModelSerializer):
     # student = StudentSerializer(many=True)

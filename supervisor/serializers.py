@@ -9,7 +9,7 @@ class SupervisorSerializer(serializers.ModelSerializer):
             )
     class Meta:
         model= Supervisor
-        fields=('pk', 'supervisor', 'first_name', 'last_name', 'email', 'birthday')
+        fields=('pk', 'type', 'first_name', 'last_name', 'email', 'birthday')
     
     # def create(self, validated_data):
     #     user = Supervisor.objects.create(
