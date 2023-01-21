@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import GetAllAssignments, GetAssignment, CreateAssignment, EditAssignmnet, DeleteAssignment, GetAllCourses, GetCourse, CreateCourse, EditCourse, DeleteCourse, GetAllStudents, GetStudent, CreateStudent, EditStudent, DeleteStudent, GetAllTeachers, GetTeacher, CreateTeacher, EditTeacher, DeleteTeacher
+from .views import GetAllAssignments, GetAssignment, CreateAssignment, EditAssignmnet, DeleteAssignment, GetAllCourses, GetCourse, CreateCourse, EditCourse, DeleteCourse, GetAllStudents, GetStudent, CreateStudent, EditStudent, DeleteStudent, GetAllTeachers, GetTeacher, CreateTeacher, EditTeacher, DeleteTeacher, GetAllStudentAssignments, GetStudentAssignment, CreateStudentAssignment, EditStudentAssignmnet
 
 urlpatterns = [
     path('assignment/get-all/', GetAllAssignments.as_view()),
@@ -22,5 +22,8 @@ urlpatterns = [
     path('teacher/create/', CreateTeacher.as_view()),
     path('teacher/update/<int:pk>', EditTeacher.as_view()),
     path('teacher/delete/<int:pk>', DeleteTeacher.as_view()),
-    
+    path('studentAssignment/get-all/', GetAllStudentAssignments.as_view()),
+    path('studentAssignment/get-one/<int:pk>', GetStudentAssignment.as_view()),
+    path('studentAssignment/create/', CreateStudentAssignment.as_view()),
+    path('studentAssignment/update/<int:pk>', EditStudentAssignmnet.as_view()), 
 ]

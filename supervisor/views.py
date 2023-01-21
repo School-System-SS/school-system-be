@@ -21,9 +21,9 @@ class getOne(APIView):
 
 class createSupervisor(APIView): 
     def post(self, request):
-        user = request.user.pk 
+        # user = request.user.pk 
         data = request.data
-        data["user"] = user 
+        # data["user"] = user 
         serializer = SupervisorSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -34,10 +34,7 @@ class UpdateSupervisor(APIView):
     def put(self, request, pk):
         try:
             user = Supervisor.objects.get(pk=pk)
-            owner = request.user.id
             updated = JSONParser().parse(request) 
-            print(updated)
-            updated["owner"] = owner
             serializer = SupervisorSerializer(user, data=updated)
             if serializer.is_valid():
                 serializer.save()
