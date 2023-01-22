@@ -10,8 +10,8 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         data['is_teacher'] = self.user.is_teacher
         data['is_student'] = self.user.is_student
         data['is_supervisor'] = self.user.is_supervisor
+        data['user_id'] = self.user.id
         return data
-
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
