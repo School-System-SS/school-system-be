@@ -33,6 +33,7 @@ class CourseModel(models.Model):
  
 class Assignment(models.Model):
     title = models.CharField(max_length=255)
+    description = models.CharField(max_length=1000, default="")
     due_date = models.DateTimeField()
     points = models.FloatField()
     course = models.ForeignKey(CourseModel, on_delete=models.CASCADE, related_name='assignments')

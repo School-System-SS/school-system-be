@@ -31,7 +31,7 @@ class AssignmentSerializer(serializers.ModelSerializer):
     # students = StudentSerializer()
     class Meta:
         model = Assignment
-        fields = ('pk','title', 'due_date', 'points', 'course', 'teacher')
+        fields = ('pk','title', 'description','due_date', 'points', 'course', 'teacher')
 
 class StudentAssignmentSerializer(serializers.ModelSerializer):
 #     class Meta:
