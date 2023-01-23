@@ -128,11 +128,9 @@ class DeleteTeacher(APIView):
 
 class GetAllCourses(APIView):
     def get(self, request):
-        courses = CourseModel.objects.all()
-        cleaned_data = [i for i in courses if request.user.id == i.teacher.type.id]
-        serializer = CourseSerializer(cleaned_data, many=True)
+        courses = CourseModel.objects.filter(teacher__type=request.user.id)
+        serializer = CourseSerializer(courses, many=True)
         return Response(serializer.data)
-
 class GetAllCoursesAdmin(APIView):
     def get(self, request):
         courses = CourseModel.objects.all()
