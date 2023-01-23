@@ -205,11 +205,11 @@ class CreateAssignment(APIView):
         for i in courses:
             if request.user.id == i.teacher.type.id:
                 data["teacher"] = i.teacher.id
-        serializer = AssignmentSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                serializer = AssignmentSerializer(data=data)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(serializer.data, status=status.HTTP_201_CREATED)
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class EditAssignmnet(APIView):
     def put(self, request, pk):
