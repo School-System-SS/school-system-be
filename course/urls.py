@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import GetAllAssignments, GetAssignment, CreateAssignment, EditAssignmnet, DeleteAssignment, GetAllCourses, GetCourse, CreateCourse, EditCourse, DeleteCourse, GetAllStudents, GetStudent, CreateStudent, EditStudent, DeleteStudent, GetAllTeachers, GetTeacher, CreateTeacher, EditTeacher, DeleteTeacher, GetAllStudentAssignments, GetStudentAssignment, CreateStudentAssignment, EditStudentAssignmnet, GetAllCoursesStudent, CourseStudents, AssignmentStudentAssignment, StudentCourseAssignment
+from .views import GetAllAssignments, GetAssignment, CreateAssignment, EditAssignmnet, DeleteAssignment, GetAllCourses, GetCourse, CreateCourse, EditCourse, DeleteCourse, GetAllStudents, GetStudent, CreateStudent, EditStudent, DeleteStudent, GetAllTeachers, GetTeacher, CreateTeacher, EditTeacher, DeleteTeacher, GetAllStudentAssignments, GetStudentAssignment, CreateStudentAssignment, EditStudentAssignmnet, GetAllCoursesStudent, CourseStudents, AssignmentStudentAssignment, StudentCourseAssignment, GetAllCoursesAdmin
 
 urlpatterns = [
     path('assignment/get-all/', GetAllAssignments.as_view()),
@@ -11,6 +11,7 @@ urlpatterns = [
     path('course/get-all/', GetAllCourses.as_view()),
     path('course/students/get-all/', GetAllCoursesStudent.as_view()),
     path('course/get-one/<int:pk>', GetCourse.as_view()),
+    path('course/admin/get-all/', GetAllCoursesAdmin.as_view()),
     path('course/create/', CreateCourse.as_view()),
     path('course/update/<int:pk>', EditCourse.as_view()),
     path('course/delete/<int:pk>', DeleteCourse.as_view()),
